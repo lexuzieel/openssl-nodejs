@@ -23,12 +23,14 @@ const checkDataTypeCompatibility = (params) => {
 }
 
 
-module.exports = function openssl(params, callback = () => undefined) {
+module.exports = function openssl(params, callback = () => undefined, dir = 'openssl/') {
     const stdout = [];
     const stderr = [];
-    const dir = 'openssl/';
     let parameters = params
 
+    if(dir == null) {
+        dir = ''
+    }
 
     if (!isFunction(callback)) {
         throw new Error(`Callback must be a function, but got a ${typeof callback}`)
@@ -48,7 +50,7 @@ module.exports = function openssl(params, callback = () => undefined) {
 
 
     for (let i = 0; i <= parameters.length - 1; i++) {
-        
+
         if (checkBufferObject(parameters[i])) {
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir);
@@ -63,7 +65,7 @@ module.exports = function openssl(params, callback = () => undefined) {
             });
 
             parameters[i] = parameters[i].name
-            parameters[i] = dir + parameters[i];            
+            parameters[i] = dir + parameters[i];
         }
 
         if (checkCommandForIO(parameters[i]) && typeof parameters[i + 1] !== 'object') {
